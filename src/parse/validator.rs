@@ -444,9 +444,11 @@ impl<'help, 'app, 'parser> Validator<'help, 'app, 'parser> {
     fn validate_arg_num_vals(&self, a: &Arg, ma: &MatchedArg) -> ClapResult<()> {
         debug!("Validator::validate_arg_num_vals");
         if let Some(num) = a.num_vals {
+            debug!("MatchedArg: {:?}", ma);
             debug!("Validator::validate_arg_num_vals: num_vals set...{}", num);
-            let should_err = if a.is_set(ArgSettings::MultipleValues) {
-                ((ma.vals.len() as u64) % num) != 0
+            let should_err = if a.is_set(ArgSettings::MultipleOccurrences) {
+                debug!("Validator::validate_arg_num_vals: counting with multiple occurrences");
+                num != (ma.vals.len() as u64)
             } else {
                 num != (ma.vals.len() as u64)
             };

@@ -184,6 +184,43 @@ fn option_exact_more() {
 }
 
 #[test]
+fn option_exact_more_by_integer_multiple_multioccurrence() {
+    let m = App::new("multiple_values")
+        .arg(
+            Arg::new("option")
+                .short('o')
+                .about("multiple options")
+                .takes_value(true)
+                .multiple(true)
+                .number_of_values(2),
+        )
+        .try_get_matches_from(vec![
+            "", "-o", "val1", "-o", "val2", "-o", "val3", "-o", "val4",
+        ]);
+
+    assert!(m.is_err());
+    assert_eq!(m.unwrap_err().kind, ErrorKind::WrongNumberOfValues);
+}
+
+#[test]
+fn option_exact_more_by_integer_multiple() {
+    let m = App::new("multiple_values")
+        .arg(
+            Arg::new("option")
+                .short('o')
+                .about("multiple options")
+                .takes_value(true)
+                .number_of_values(2),
+        )
+        .try_get_matches_from(vec![
+            "", "-o", "val1", "-o", "val2", "-o", "val3", "-o", "val4",
+        ]);
+
+    assert!(m.is_err());
+    assert_eq!(m.unwrap_err().kind, ErrorKind::WrongNumberOfValues);
+}
+
+#[test]
 fn option_min_exact() {
     let m = App::new("multiple_values")
         .arg(
@@ -408,6 +445,20 @@ fn positional_exact_more() {
                 .number_of_values(3),
         )
         .try_get_matches_from(vec!["myprog", "val1", "val2", "val3", "val4"]);
+
+    assert!(m.is_err());
+    assert_eq!(m.unwrap_err().kind, ErrorKind::WrongNumberOfValues);
+}
+
+#[test]
+fn positional_exact_more_by_integer_multiple() {
+    let m = App::new("multiple_values")
+        .arg(
+            Arg::new("pos")
+                .about("multiple positionals")
+                .number_of_values(3),
+        )
+        .try_get_matches_from(vec!["myprog", "val1", "val2", "val3", "val4", "val5", "val6"]);
 
     assert!(m.is_err());
     assert_eq!(m.unwrap_err().kind, ErrorKind::WrongNumberOfValues);
